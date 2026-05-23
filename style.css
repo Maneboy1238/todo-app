@@ -6,7 +6,7 @@ body {
   background-color: hsl(0, 0%, 5%);
   margin: 0;
   padding: 0;
-  height: 100dvh;
+  min-height: 100dvh;
   width: 100%;
   color: white;
   font-family: "Google Sans Flex", sans-serif;
@@ -34,8 +34,7 @@ header {
   align-items: center;
   padding: 10px 15px;
   position: fixed;
-  inset: auto 0 auto 0;
-  top: 0;
+  inset: 0 0 auto 0;
   background-color: hsl(0, 0%, 5%);
 }
 .logo-text {
@@ -80,15 +79,15 @@ header {
 .nav-container {
   width: 100%;
   display: flex;
+  padding: 2px;
   justify-content: center;
-  padding: 10px;
   align-items: center;
 }
 .nav-list {
   padding: 15px 20px;
   border-radius: 24px;
-  margin-right: 10px;
-  width: 33%;
+  margin-right: 5px;
+  width: 33.3%;
   text-align: center;
   font-size: 14px;
 
