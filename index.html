@@ -1,0 +1,360 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>XERO TODO</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="js-container"></div>
+
+    <script src="https://unpkg.com/supersimpledev/react.js"></script>
+    <script src="https://unpkg.com/supersimpledev/react-dom.js"></script>
+
+    <script src="https://unpkg.com/supersimpledev/babel.js"></script>
+    <script type="text/babel">
+      function Header() {
+        return (
+          <header>
+            <h1 className="logo-text">
+              <span className="highlighted-logo-text">XERO</span>TODO
+            </h1>
+            <i>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"
+                />
+              </svg>
+            </i>
+          </header>
+        );
+      }
+      function TaskDone({ allTasks }) {
+        /*
+        const [taskCompleted, setTaskCompleted] = React.useState(0);
+        React.useEffect(() => {
+          setTaskCompleted(allTasks.filter((task) => task.completed).length);
+        }, [allTasks]);
+        */
+        const taskCompleted = allTasks.filter((task) => task.completed).length;
+        return (
+          <div className="task-done-container">
+            <div className="task-done-text-container">
+              <h2>Task Done</h2>
+              <p>{taskCompleted > 0 ? "Keep it up" : "No tasks done"}</p>
+            </div>
+            <div className="task-completed-number">
+              {taskCompleted} / {allTasks.length}
+            </div>
+          </div>
+        );
+      }
+      function FilterLinks({ activeFilter, setActiveFilter }) {
+        return (
+          <ul className="nav-container">
+            <li className="nav-list">
+              <button
+                className={activeFilter === "all" && "active"}
+                onClick={() => {
+                  setActiveFilter("all");
+                }}
+              >
+                All
+              </button>
+            </li>
+            <li className="nav-list">
+              <button
+                className={activeFilter === "pending" && "active"}
+                onClick={() => {
+                  setActiveFilter("pending");
+                }}
+              >
+                Active
+              </button>
+            </li>
+            <li className="nav-list">
+              <button
+                className={activeFilter === "completed" && "active"}
+                onClick={() => {
+                  setActiveFilter("completed");
+                }}
+              >
+                Completed
+              </button>
+            </li>
+          </ul>
+        );
+      }
+
+      function TaskList({ filteredTask, setAllTasks, allTasks }) {
+        const [editId, setEditId] = React.useState(null);
+        const [editText, setEditText] = React.useState("");
+        function handleDeleteTask(id) {
+          setAllTasks((prev) => prev.filter((task) => task.id !== id));
+        }
+        function handleCheck(id) {
+          setAllTasks((prev) =>
+            prev.map((task) =>
+              task.id === id
+                ? { ...task, completed: task.completed ? false : true }
+                : task,
+            ),
+          );
+        }
+        function handleEdit(task) {
+          setEditText(task.title);
+          setEditId(task.id);
+        }
+        function handleSaveEdit() {
+          if (!editText) return;
+          setAllTasks((prev) =>
+            prev.map((task) =>
+              task.id === editId
+                ? {
+                    ...task,
+                    title: editText,
+                  }
+                : task,
+            ),
+          );
+          setEditText("");
+          setEditId(null);
+        }
+
+        return (
+          <ul className="task-item-container">
+            {filteredTask.map((task) => (
+              <TaskItem
+                task={task}
+                editId={editId}
+                editText={editText}
+                setEditText={setEditText}
+                handleCheck={handleCheck}
+                handleSaveEdit={handleSaveEdit}
+                handleDeleteTask={handleDeleteTask}
+                handleEdit={handleEdit}
+                key={task.id}
+              />
+            ))}
+          </ul>
+        );
+      }
+      function TaskTextBox({ setAllTasks }) {
+        const [saveTaskInput, setSaveTaskInput] = React.useState("");
+        function handleSaveTaskInput(event) {
+          setSaveTaskInput(event.target.value);
+        }
+        function handleCreateTaskOnKeydown(e) {
+          if (e.key === "Enter") {
+          }
+        }
+        function handleCreateTask() {
+          if (!saveTaskInput.trim()) return;
+          setAllTasks((prev) => [
+            {
+              id: crypto.randomUUID(),
+              title: saveTaskInput,
+              completed: false,
+            },
+            ...prev,
+          ]);
+
+          setSaveTaskInput("");
+        }
+        return (
+          <div className="task-text-box">
+            <input
+              type="text"
+              size="50"
+              className="task-input"
+              placeholder="Write your next task"
+              onChange={handleSaveTaskInput}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleCreateTask();
+                }
+                if (e.key === "Escape") {
+                  setSaveTaskInput("");
+                }
+              }}
+              value={saveTaskInput}
+            />
+            <button className="task-add-btn" onclick={handleCreateTask}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+            </button>
+          </div>
+        );
+      }
+      function TaskItem({
+        task,
+        editId,
+        editText,
+        setEditText,
+        handleCheck,
+        handleSaveEdit,
+        handleDeleteTask,
+        handleEdit,
+      }) {
+        return (
+          <li className="task-item" key={task.id}>
+            <div className="task-item-input-container">
+              <input
+                type="checkbox"
+                className="task-item-checkbox"
+                onChange={() => handleCheck(task.id)}
+                checked={task.completed}
+              />
+              {editId === task.id ? (
+                <textarea
+                  value={editText}
+                  className="task-item-edit-input"
+                  onChange={(e) => setEditText(e.target.value)}
+                  size="30"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleSaveEdit();
+                    }
+                    if (e.key === "Escape") {
+                      setEditText("");
+                    }
+                  }}
+                />
+              ) : task.completed ? (
+                <del> {task.title} </del>
+              ) : (
+                <span> {task.title} </span>
+              )}
+            </div>
+            {editId === task.id ? (
+              <button className="task-item-save-btn" onClick={handleSaveEdit}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m4.5 12.75 6 6 9-13.5"
+                  />
+                </svg>
+              </button>
+            ) : (
+              <div className="task-item-btn-container">
+                <button
+                  className="task-item-delete-btn"
+                  onClick={() => handleDeleteTask(task.id)}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="size-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                    />
+                  </svg>
+                </button>
+                {!task.completed && (
+                  <button
+                    className="task-item-edit-btn"
+                    onClick={() => handleEdit(task)}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="size-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                      />
+                    </svg>
+                  </button>
+                )}
+              </div>
+            )}
+          </li>
+        );
+      }
+      function App() {
+        const [allTasks, setAllTasks] = React.useState(() => {
+          const storedTasks = localStorage.getItem("all-tasks");
+          if (!storedTasks) return [];
+          try {
+            const parsedStoredTasks = JSON.parse(storedTasks);
+            return Array.isArray(parsedStoredTasks) ? parsedStoredTasks : [];
+          } catch (error) {
+            return [];
+          }
+        });
+        const [activeFilter, setActiveFilter] = React.useState("all");
+
+        React.useEffect(() => {
+          localStorage.setItem("all-tasks", JSON.stringify(allTasks));
+        }, [allTasks]);
+
+        const filteredTask = allTasks.filter((task) => {
+          if (activeFilter === "pending") return !task.completed;
+          if (activeFilter === "completed") return task.completed;
+
+          return true;
+        });
+
+        return (
+          <section className="app-container">
+            <Header />
+            <TaskDone allTasks={allTasks} />
+            <FilterLinks
+              activeFilter={activeFilter}
+              setActiveFilter={setActiveFilter}
+            />
+            <TaskList
+              filteredTask={filteredTask}
+              setAllTasks={setAllTasks}
+              allTasks={allTasks}
+            />
+            <TaskTextBox setAllTasks={setAllTasks} />
+          </section>
+        );
+      }
+      const container = document.querySelector(".js-container");
+      ReactDOM.createRoot(container).render(<App />);
+    </script>
+  </body>
+</html>
