@@ -40,6 +40,7 @@ header {
 .logo-text {
   font-size: 24px;
   color: hsl(11, 90%, 55%);
+  line-height: 0.1;
 }
 .highlighted-logo-text {
   color: hsl(11, 100%, 95%);
@@ -80,16 +81,17 @@ header {
   width: 100%;
   display: flex;
   padding: 2px;
+  gap: 8px;
   justify-content: center;
   align-items: center;
 }
 .nav-list {
-  padding: 15px 20px;
+  padding: 10px 15px;
   border-radius: 24px;
   margin-right: 5px;
-  width: 33.3%;
+  width: 30%;
   text-align: center;
-  font-size: 14px;
+  font-size: 12px;
 
   font-weight: bold;
   background: hsl(0, 0%, 10%);
@@ -124,7 +126,7 @@ header {
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  font-size: 16px;
+  font-size: 14px;
   background: hsl(0, 0%, 10%);
   color: hsl(11, 90%, 95%);
   font-weight: 200;
@@ -164,16 +166,16 @@ header {
 }
 .task-item-btn-container {
   display: flex;
-  gap: 8px;
 }
 .task-item button {
   background: transparent;
   border: none;
-  width: 30px;
+  width: max-content;
   cursor: pointer;
 }
 .task-item button svg {
   stroke-width: 1;
+  width: 20px;
 }
 .task-text-box {
   position: fixed;
