@@ -62,9 +62,19 @@
             <div className="task-done-field">
               <div className="task-done-text-container">
                 <h2>
-                  {taskLeft === 0 ? "Create a task" : `${taskLeft} task left`}
+                  {allTasks === 0
+                    ? "Create a task"
+                    : taskLeft === 0
+                      ? `All caught up`
+                      : `${taskLeft} task left`}
                 </h2>
-                <p>{taskCompleted > 0 ? "Keep it up" : "No tasks done"}</p>
+                <p>
+                  {allTasks === 0
+                    ? "No tasks. Time to start"
+                    : taskLeft === 0
+                      ? "You killed it 🔥"
+                      : "Keep going"}
+                </p>
               </div>
               <div className="task-completed-number">{percentage} %</div>
             </div>
