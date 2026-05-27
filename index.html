@@ -49,21 +49,30 @@
         );
       }
       function TaskDone({ allTasks }) {
-        /*
-        const [taskCompleted, setTaskCompleted] = React.useState(0);
-        React.useEffect(() => {
-          setTaskCompleted(allTasks.filter((task) => task.completed).length);
-        }, [allTasks]);
-        */
+        const taskLeft = allTasks.filter((task) => {
+          return !task.completed;
+        }).length;
         const taskCompleted = allTasks.filter((task) => task.completed).length;
+        const percentage =
+          allTasks === 0
+            ? 0
+            : Math.round((taskCompleted / allTasks.length) * 100);
         return (
           <div className="task-done-container">
-            <div className="task-done-text-container">
-              <h2>Task Done</h2>
-              <p>{taskCompleted > 0 ? "Keep it up" : "No tasks done"}</p>
+            <div className="task-done-field">
+              <div className="task-done-text-container">
+                <h2>
+                  {taskLeft === 0 ? "Create a task" : `${taskLeft} task left`}
+                </h2>
+                <p>{taskCompleted > 0 ? "Keep it up" : "No tasks done"}</p>
+              </div>
+              <div className="task-completed-number">{percentage} %</div>
             </div>
-            <div className="task-completed-number">
-              {taskCompleted} / {allTasks.length}
+            <div className="progress">
+              <div
+                className="progress-bar"
+                style={{ width: `${percentage}%` }}
+              ></div>
             </div>
           </div>
         );
