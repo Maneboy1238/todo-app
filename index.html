@@ -87,47 +87,77 @@
           </div>
         );
       }
-      function FilterLinks({ activeFilter, setActiveFilter }) {
-        return (
-          <ul className="nav-container">
-            <li
-              className={
-                activeFilter === "all" ? " nav-list active" : "nav-list"
-              }
-              onClick={() => {
-                setActiveFilter("all");
-              }}
-            >
-              All
-            </li>
+      const FilterLinks = React.forwardRef(
+        ({ activeFilter, setActiveFilter }, ref) => {
+          return (
+            <ul className="nav-container" ref={ref}>
+              <li
+                className={
+                  activeFilter === "all" ? " nav-list active" : "nav-list"
+                }
+                onClick={() => {
+                  setActiveFilter("all");
+                }}
+              >
+                All
+              </li>
 
-            <li
-              className={
-                activeFilter === "pending" ? " nav-list active" : "nav-list"
-              }
-              onClick={() => {
-                setActiveFilter("pending");
-              }}
-            >
-              Active
-            </li>
-            <li
-              className={
-                activeFilter === "completed" ? " nav-list active" : "nav-list"
-              }
-              onClick={() => {
-                setActiveFilter("completed");
-              }}
-            >
-              Done
-            </li>
-          </ul>
-        );
-      }
+              <li
+                className={
+                  activeFilter === "pending" ? " nav-list active" : "nav-list"
+                }
+                onClick={() => {
+                  setActiveFilter("pending");
+                }}
+              >
+                Active
+              </li>
+              <li
+                className={
+                  activeFilter === "completed" ? " nav-list active" : "nav-list"
+                }
+                onClick={() => {
+                  setActiveFilter("completed");
+                }}
+              >
+                Done
+              </li>
+            </ul>
+          );
+        },
+      );
 
-      function TaskList({ filteredTask, setAllTasks, allTasks }) {
+      function TaskList({
+        filteredTask,
+        setAllTasks,
+        allTasks,
+        appContainerRef,
+        filterLinksRef,
+      }) {
         const [editId, setEditId] = React.useState(null);
         const [editText, setEditText] = React.useState("");
+        const taskContainerRef = React.useRef(null);
+        React.useEffect(() => {
+          if (
+            taskContainerRef.current &&
+            appContainerRef.current &&
+            filterLinksRef.current
+          ) {
+            const taskContainerElem = taskContainerRef.current;
+            const appContainerElem = appContainerRef.current;
+            const filterLinksElem = filterLinksRef.current;
+
+            const filterLinksHeight =
+              filterLinksElem.getBoundingClientRect().height;
+            const visualGap = 20;
+            const scrollPosition =
+              taskContainerElem.offsetTop - filterLinksHeight - visualGap;
+            appContainerElem.scrollTo({
+              top: scrollPosition,
+              behaviour: "smooth",
+            });
+          }
+        }, [allTasks]);
         function handleDeleteTask(id) {
           setAllTasks((prev) => prev.filter((task) => task.id !== id));
         }
@@ -161,7 +191,7 @@
         }
 
         return (
-          <ul className="task-item-container">
+          <ul className="task-item-container" ref={taskContainerRef}>
             {filteredTask <= 0 ? (
               <div className="no-tasks-found">
                 <svg
@@ -382,7 +412,8 @@
           }
         });
         const [activeFilter, setActiveFilter] = React.useState("all");
-
+        const filterLinksRef = React.useRef(null);
+        const appContainerRef = React.useRef(null);
         React.useEffect(() => {
           localStorage.setItem("all-tasks", JSON.stringify(allTasks));
         }, [allTasks]);
@@ -395,10 +426,11 @@
         });
 
         return (
-          <section className="app-container">
+          <section className="app-container" ref={appContainerRef}>
             <Header />
             <TaskDone allTasks={allTasks} />
             <FilterLinks
+              ref={filterLinksRef}
               activeFilter={activeFilter}
               setActiveFilter={setActiveFilter}
             />
@@ -406,6 +438,8 @@
               filteredTask={filteredTask}
               setAllTasks={setAllTasks}
               allTasks={allTasks}
+              appContainerRef={appContainerRef}
+              filterLinksRef={filterLinksRef}
             />
             <TaskTextBox setAllTasks={setAllTasks} />
           </section>
