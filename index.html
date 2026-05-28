@@ -302,7 +302,7 @@
           if (textareaRef.current) {
             const textareaElem = textareaRef.current;
             textareaElem.focus();
-            textareaElem.setSelectionRange(0, editText.length);
+            textareaElem.setSelectionRange(editText.length, editText.length);
           }
         }, [editText]);
         return (
