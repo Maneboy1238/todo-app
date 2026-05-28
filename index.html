@@ -62,14 +62,14 @@
             <div className="task-done-field">
               <div className="task-done-text-container">
                 <h2>
-                  {allTasks === 0
+                  {allTasks.length === 0
                     ? "Create a task"
                     : taskLeft === 0
                       ? `All caught up`
                       : `${taskLeft} task left`}
                 </h2>
                 <p>
-                  {allTasks === 0
+                  {allTasks.length === 0
                     ? "No tasks. Time to start"
                     : taskLeft === 0
                       ? "You killed it 🔥"
