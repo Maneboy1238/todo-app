@@ -54,7 +54,7 @@
         }).length;
         const taskCompleted = allTasks.filter((task) => task.completed).length;
         const percentage =
-          allTasks === 0
+          allTasks.length === 0
             ? 0
             : Math.round((taskCompleted / allTasks.length) * 100);
         return (
